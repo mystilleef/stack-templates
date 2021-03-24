@@ -4,4 +4,4 @@ The default template is used to generate a Haskell project that plays nicely wit
 
 ## Usage
 
-`stack new __name-of-haskell-project__ mystilleef/default`
+`stack new name-of-haskell-project mystilleef/default`
