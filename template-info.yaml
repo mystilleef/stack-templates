@@ -1,0 +1,2 @@
+default:
+  description: Generates a haskell project that plays nicely with vscode. Adds hie.yaml, .editorconfig, .hlint.yaml, hspec and QuickCheck as dependencies. Also adds stricter compilation options for GHC.
