@@ -33,9 +33,6 @@ dependencies:
 
 library:
   source-dirs: src
-  when:
-    - condition: false
-      other-modules: Paths_{{name}}
   ghc-options:
     - -j
     - -Weverything
@@ -50,9 +47,6 @@ executables:
   {{name}}-exe:
     main:                Main.hs
     source-dirs:         app
-    when:
-      - condition: false
-        other-modules: Paths_{{name}}
     ghc-options:
       - -Wno-missing-local-signatures
       - -Wno-prepositive-qualified-module
@@ -70,9 +64,6 @@ tests:
   {{name}}-test:
     main:                Spec.hs
     source-dirs:         test
-    when:
-      - condition: false
-        other-modules: Paths_{{name}}
     ghc-options:
       - -Weverything
       - -Wcompat
@@ -279,12 +270,9 @@ cradle:
     - path: "./app/Main.hs"
       component: "{{name}}:exe:{{name}}-exe"
 
-    - path: "./app/Paths_{{name}}.hs"
-      component: "{{name}}:exe:{{name}}-exe"
-
     - path: "./test"
       component: "{{name}}:test:{{name}}-test"
-      
+
 {-# START_FILE .hlint.yaml #-}
 - arguments: [-j=4, -XHaskell2010]
 - group: { name: default, enabled: true }
@@ -382,7 +370,7 @@ module Lib (runProgram) where
 import Prelude (IO, putStrLn)
 
 runProgram :: IO ()
-runProgram = putStrLn "running program..."
+runProgram = putStrLn "running {{name}} program..."
 
 {-# START_FILE app/Main.hs #-}
 module Main (module Main) where
