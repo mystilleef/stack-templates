@@ -33,6 +33,9 @@ dependencies:
 
 library:
   source-dirs: src
+  when:
+    - condition: false
+      other-modules: Paths_{{name}}
   ghc-options:
     - -j
     - -Weverything
@@ -47,6 +50,9 @@ executables:
   {{name}}-exe:
     main:                Main.hs
     source-dirs:         app
+    when:
+      - condition: false
+        other-modules: Paths_{{name}}
     ghc-options:
       - -Wno-missing-local-signatures
       - -Wno-prepositive-qualified-module
@@ -64,6 +70,9 @@ tests:
   {{name}}-test:
     main:                Spec.hs
     source-dirs:         test
+    when:
+      - condition: false
+        other-modules: Paths_{{name}}
     ghc-options:
       - -Weverything
       - -Wcompat
