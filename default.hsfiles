@@ -19,7 +19,6 @@ extra-source-files:
 
 default-extensions:
   - Safe
-  - NoImplicitPrelude
   - UnicodeSyntax
   - DerivingStrategies
   - NamedFieldPuns
@@ -83,6 +82,7 @@ tests:
       - -Wno-missing-safe-haskell-mode
       - -Wno-missing-import-lists
       - -Wno-missing-export-lists
+      - -Wno-implicit-prelude
       - -fno-safe-haskell
       - -Wno-unsafe
       - -j
@@ -270,18 +270,6 @@ tests:
   ]
 }
 
-{-# START_FILE hie.yaml #-}
-cradle:
-  stack:
-    - path: "./src"
-      component: "{{name}}:lib"
-
-    - path: "./app/Main.hs"
-      component: "{{name}}:exe:{{name}}-exe"
-
-    - path: "./test"
-      component: "{{name}}:test:{{name}}-test"
-
 {-# START_FILE .hlint.yaml #-}
 - arguments: [-j=4, -XHaskell2010]
 - group: { name: default, enabled: true }
@@ -290,9 +278,9 @@ cradle:
 - group: { name: generalise-for-conciseness, enabled: true }
 - group: { name: extra, enabled: true }
 - group: { name: teaching, enabled: true }
-- group: { name: use-lens, enabled: true }
-- group: { name: attoparsec, enabled: true }
-- group: { name: codeworld, enabled: true }
+#- group: { name: use-lens, enabled: true }
+#- group: { name: attoparsec, enabled: true }
+#- group: { name: codeworld, enabled: true }
 - group: { name: monomorphic, enabled: true }
 - group: { name: future, enabled: true }
 - warn: { name: Use module export list }
@@ -338,17 +326,21 @@ LIB_TARGET="${PACKAGE}:lib"
 
 TEST_TARGET="${PACKAGE}:test:${PACKAGE}-test"
 
-GHCI_OPTIONS="-w -fobject-code -fno-print-bind-result"
+GHCI_OPTIONS="-v1
+  -w \
+  -fobject-code \
+  -fno-print-bind-result \
+  -interactive-print=Text.Pretty.Simple.pPrint"
 
 STACK_GHCI_COMMAND="stack ghci $LIB_TARGET \
   --main-is $TEST_TARGET \
   --test \
   --silent \
   --pedantic \
-  --ghci-options '$GHCI_OPTIONS' \
-  --ghc-options '$GHCI_OPTIONS'"
+  --package pretty-simple \
+  --ghci-options '$GHCI_OPTIONS'"
 
-stack exec -- ghcid --command "${STACK_GHCI_COMMAND}" --test "main"
+stack exec -- ghcid --command "$STACK_GHCI_COMMAND" --test "main"
 
 {-# START_FILE Setup.hs #-}
 import Distribution.Simple
