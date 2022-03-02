@@ -18,32 +18,34 @@ extra-source-files:
 - ChangeLog.md
 
 default-extensions:
-  - Safe
-  - UnicodeSyntax
   - DerivingStrategies
-  - NamedFieldPuns
-  - RecordWildCards
-  - NumericUnderscores
-  - MultiWayIf
-  - LambdaCase
+  - OverloadedStrings
+  - UnicodeSyntax
+
+build-tools:
+  - ghcid
+  - hlint
+  - hoogle
+  - pretty-simple
 
 dependencies:
-- base >= 4.7 && < 5
+  - base
+
+ghc-options:
+  - -j
+  - -Werror
+  - -Weverything
+  - -Wno-unsafe
+  - -Wno-safe
+  - -Wno-monomorphism-restriction
+  - -Wno-missing-safe-haskell-mode
+  - -fwrite-ide-info -hiedir=.hie
 
 library:
   source-dirs: src
   when:
     - condition: false
       other-modules: Paths_{{name}}
-  ghc-options:
-    - -j
-    - -Weverything
-    - -Wcompat
-    - -Werror
-    - -fno-safe-haskell
-    - -Wno-unsafe
-    - -Wno-prepositive-qualified-module
-    - -Wno-missing-safe-haskell-mode
 
 executables:
   {{name}}-exe:
@@ -53,12 +55,7 @@ executables:
       - condition: false
         other-modules: Paths_{{name}}
     ghc-options:
-      - -Wno-missing-local-signatures
-      - -Wno-prepositive-qualified-module
-      - -fno-safe-haskell
-      - -Wno-unsafe
       - -O2
-      - -j
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
@@ -68,207 +65,25 @@ executables:
 tests:
   {{name}}-test:
     main:                Spec.hs
-    source-dirs:         test
+    defaults: hspec/hspec@master
+    build-tools: hspec-discover
+    source-dirs:
+      - test
+      - src
     when:
       - condition: false
         other-modules: Paths_{{name}}
     ghc-options:
-      - -Weverything
-      - -Wcompat
-      - -Werror
-      - -Wno-all-missed-specialisations
-      - -Wno-prepositive-qualified-module
-      - -Wno-missing-exported-signatures
-      - -Wno-missing-safe-haskell-mode
-      - -Wno-missing-import-lists
-      - -Wno-missing-export-lists
-      - -Wno-implicit-prelude
-      - -fno-safe-haskell
-      - -Wno-unsafe
-      - -j
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
+      - -Wno-implicit-prelude
+      - -Wno-missing-export-lists
+      - -Wno-prepositive-qualified-module
+      - -Wno-missing-import-lists
+      - -Wno-all-missed-specialisations
     dependencies:
-    - hspec
-    - QuickCheck
-
-{-# START_FILE .vscode/tasks.json #-}
-{
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "zsh",
-      "type": "process",
-      "command": "zsh",
-      "presentation": {
-        "echo": false,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "problemMatcher": [],
-      "runOptions": {
-        "runOn": "folderOpen"
-      },
-      "group": "none",
-    },
-    {
-      "label": "stack repl",
-      "type": "process",
-      "command": "stack",
-      "args": [
-        "repl",
-        "--silent",
-        "--no-interleaved-output",
-      ],
-      "presentation": {
-        "echo": false,
-        "reveal": "always",
-        "focus": true,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "problemMatcher": [],
-      "group": "none"
-    },
-    {
-      "label": "stack hoogle",
-      "type": "process",
-      "command": "stack",
-      "args": [
-        "hoogle",
-        "--silent",
-        "--no-interleaved-output",
-        "--",
-        "generate",
-        "--local"
-      ],
-      "presentation": {
-        "echo": false,
-        "reveal": "silent",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "problemMatcher": [],
-      "runOptions": {
-        "runOn": "folderOpen"
-      },
-    },
-    {
-      "label": "stack hoogle server",
-      "type": "process",
-      "command": "stack",
-      "args": [
-        "hoogle",
-        "--",
-        "server",
-        "--local",
-        "--port=8080",
-      ],
-      "presentation": {
-        "echo": false,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "stack run",
-      "type": "process",
-      "command": "stack",
-      "args": [
-        "run",
-        "--silent",
-        "--no-interleaved-output"
-      ],
-      "presentation": {
-        "echo": false,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "problemMatcher": [],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
-    },
-    {
-      "label": "stack build",
-      "type": "process",
-      "command": "stack",
-      "args": [
-        "build",
-        "--haddock-deps",
-        "--no-interleaved-output"
-      ],
-      "presentation": {
-        "echo": false,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "problemMatcher": [],
-      "group": "build"
-    },
-    {
-      "label": "stack test",
-      "type": "process",
-      "command": "stack",
-      "args": [
-        "test",
-        "--fast",
-        "--silent",
-        "--haddock-deps",
-        "--no-interleaved-output",
-      ],
-      "presentation": {
-        "echo": false,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "problemMatcher": [],
-      "group": {
-        "kind": "test",
-        "isDefault": true
-      }
-    },
-    {
-      "label": "stack ghcid",
-      "type": "process",
-      "command": "./stackghcidtest.sh",
-      "presentation": {
-        "echo": false,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "problemMatcher": [],
-      "runOptions": {
-        "runOn": "folderOpen"
-      },
-      "group": "test",
-    },
-  ]
-}
+      - QuickCheck
 
 {-# START_FILE .hlint.yaml #-}
 - arguments: [-j=4, -XHaskell2010]
@@ -326,21 +141,16 @@ LIB_TARGET="${PACKAGE}:lib"
 
 TEST_TARGET="${PACKAGE}:test:${PACKAGE}-test"
 
-GHCI_OPTIONS="-v1
-  -w \
-  -fobject-code \
-  -fno-print-bind-result \
-  -interactive-print=Text.Pretty.Simple.pPrint"
+GHCI_OPTIONS="-v1 -fobject-code -Wno-missing-local-signatures"
 
 STACK_GHCI_COMMAND="stack ghci $LIB_TARGET \
   --main-is $TEST_TARGET \
   --test \
   --silent \
   --pedantic \
-  --package pretty-simple \
   --ghci-options '$GHCI_OPTIONS'"
 
-stack exec -- ghcid --command "$STACK_GHCI_COMMAND" --test "main"
+stack exec -- ghcid --command "$STACK_GHCI_COMMAND" --test "main" --clear
 
 {-# START_FILE Setup.hs #-}
 import Distribution.Simple
