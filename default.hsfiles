@@ -169,11 +169,10 @@ import Prelude (Integer, ($), (.), (==))
 spec :: Spec
 spec = parallel $ do
   describe "remove this hspec header" $ do
-    it "remove this hspec placeholder" $
+    it "remove this hspec placeholder" $ do
       23 `shouldBe` (23 :: Integer)
-
-    it "remove this quick check placeholder" . property $
-      \x -> x == (x :: Integer)
+    it "remove this quick check placeholder" $ do
+      property $ \x -> x == (x :: Integer)
 
 {-# START_FILE src/Lib.hs #-}
 module Lib (runProgram) where
