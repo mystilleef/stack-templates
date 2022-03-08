@@ -67,9 +67,7 @@ tests:
     main:                Spec.hs
     defaults: hspec/hspec@master
     build-tools: hspec-discover
-    source-dirs:
-      - test
-      - src
+    source-dirs: test
     when:
       - condition: false
         other-modules: Paths_{{name}}
@@ -83,6 +81,7 @@ tests:
       - -Wno-missing-import-lists
       - -Wno-all-missed-specialisations
     dependencies:
+      - {{name}}
       - QuickCheck
 
 {-# START_FILE .hlint.yaml #-}
@@ -159,28 +158,52 @@ main = defaultMain
 {-# START_FILE test/Spec.hs #-}
 {-# OPTIONS_GHC -F -pgmF hspec-discover #-}
 
-{-# START_FILE test/SampleSpec.hs #-}
-module SampleSpec (spec) where
+{-# START_FILE test/LibSpec.hs #-}
+module LibSpec (spec) where
 
-import Test.Hspec (Spec, describe, it, parallel, shouldBe)
+import Lib (runString)
+import Test.Hspec
+  ( Spec,
+    describe,
+    it,
+    parallel,
+    shouldBe,
+  )
 import Test.QuickCheck (property)
-import Prelude (Integer, ($), (.), (==))
+import Prelude
+  ( Integer,
+    String,
+    ($),
+    (+),
+    (>),
+  )
 
 spec :: Spec
 spec = parallel $ do
-  describe "remove this hspec header" $ do
-    it "remove this hspec placeholder" $ do
-      23 `shouldBe` (23 :: Integer)
-    it "remove this quick check placeholder" $ do
-      property $ \x -> x == (x :: Integer)
+  describe "Program string" $ do
+    it "shows the name of the running program" $ do
+      runString `shouldBe` ("running {{name}} program..." :: String)
+    it "x + 1 is always greater than x" $ do
+      property $ \x -> x + 1 > (x :: Integer)
 
 {-# START_FILE src/Lib.hs #-}
-module Lib (runProgram) where
+module Lib
+  ( runProgram,
+    runString,
+  )
+where
 
-import Prelude (IO, putStrLn)
+import Data.String (IsString)
+import Prelude
+  ( IO,
+    putStrLn,
+  )
 
 runProgram :: IO ()
-runProgram = putStrLn "running {{name}} program..."
+runProgram = putStrLn runString
+
+runString :: IsString p => p
+runString = "running {{name}} program..."
 
 {-# START_FILE app/Main.hs #-}
 module Main (module Main) where
