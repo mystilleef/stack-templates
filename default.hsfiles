@@ -75,10 +75,6 @@ tests:
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
-      - -Wno-implicit-prelude
-      - -Wno-missing-export-lists
-      - -Wno-prepositive-qualified-module
-      - -Wno-missing-import-lists
       - -Wno-all-missed-specialisations
     dependencies:
       - {{name}}
@@ -156,7 +152,11 @@ import Distribution.Simple
 main = defaultMain
 
 {-# START_FILE test/Spec.hs #-}
-{-# OPTIONS_GHC -F -pgmF hspec-discover #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# OPTIONS_GHC -F -pgmF hspec-discover
+-Wno-missing-export-lists
+-Wno-prepositive-qualified-module
+-Wno-missing-import-lists #-}
 
 {-# START_FILE test/LibSpec.hs #-}
 module LibSpec (spec) where
