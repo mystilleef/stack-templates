@@ -96,6 +96,7 @@ tests:
 - warn: { name: Use module export list }
 - warn: { name: Use String }
 - ignore: { name: Use infix }
+- ignore: { module: Spec.hs }
 
 {-# START_FILE .hspec #-}
 --format=failed-examples
