@@ -153,11 +153,11 @@ import Distribution.Simple
 main = defaultMain
 
 {-# START_FILE test/Spec.hs #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# OPTIONS_GHC -F -pgmF hspec-discover
--Wno-missing-export-lists
--Wno-prepositive-qualified-module
--Wno-missing-import-lists #-}
+{-# OPTIONS_GHC -F -pgmF hspec-discover #-}
+{-# OPTIONS_GHC -Wno-implicit-prelude #-}
+{-# OPTIONS_GHC -Wno-missing-export-lists #-}
+{-# OPTIONS_GHC -Wno-missing-import-lists #-}
+{-# OPTIONS_GHC -Wno-prepositive-qualified-module #-}
 
 {-# START_FILE test/LibSpec.hs #-}
 module LibSpec (spec) where
