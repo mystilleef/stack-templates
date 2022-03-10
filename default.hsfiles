@@ -67,7 +67,9 @@ tests:
     main:                Spec.hs
     defaults: hspec/hspec@master
     build-tools: hspec-discover
-    source-dirs: test
+    source-dirs:
+      - src
+      - test
     when:
       - condition: false
         other-modules: Paths_{{name}}
@@ -77,7 +79,6 @@ tests:
       - -with-rtsopts=-N
       - -Wno-all-missed-specialisations
     dependencies:
-      - {{name}}
       - QuickCheck
 
 {-# START_FILE .hlint.yaml #-}
@@ -137,7 +138,11 @@ LIB_TARGET="${PACKAGE}:lib"
 
 TEST_TARGET="${PACKAGE}:test:${PACKAGE}-test"
 
-GHCI_OPTIONS="-v1 -fobject-code -Wno-missing-local-signatures"
+GHCI_OPTIONS="-v1 \
+  -fobject-code \
+  -Wno-missing-local-signatures \
+  -Wno-missing-import-lists"
+
 
 STACK_GHCI_COMMAND="stack ghci $LIB_TARGET \
   --main-is $TEST_TARGET \
