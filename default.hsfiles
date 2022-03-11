@@ -19,6 +19,7 @@ extra-source-files:
 
 default-extensions:
   - DerivingStrategies
+  - ImportQualifiedPost
   - NoImplicitPrelude
   - OverloadedStrings
   - UnicodeSyntax
@@ -67,9 +68,7 @@ tests:
     main:                Spec.hs
     defaults: hspec/hspec@master
     build-tools: hspec-discover
-    source-dirs:
-      - src
-      - test
+    source-dirs: test
     when:
       - condition: false
         other-modules: Paths_{{name}}
@@ -79,6 +78,7 @@ tests:
       - -with-rtsopts=-N
       - -Wno-all-missed-specialisations
     dependencies:
+      - {{name}}
       - QuickCheck
 
 {-# START_FILE .hlint.yaml #-}
@@ -89,15 +89,11 @@ tests:
 - group: { name: generalise-for-conciseness, enabled: true }
 - group: { name: extra, enabled: true }
 - group: { name: teaching, enabled: true }
-#- group: { name: use-lens, enabled: true }
-#- group: { name: attoparsec, enabled: true }
-#- group: { name: codeworld, enabled: true }
 - group: { name: monomorphic, enabled: true }
 - group: { name: future, enabled: true }
 - warn: { name: Use module export list }
 - warn: { name: Use String }
 - ignore: { name: Use infix }
-- ignore: { module: Spec.hs }
 
 {-# START_FILE .hspec #-}
 --format=failed-examples
@@ -143,7 +139,6 @@ GHCI_OPTIONS="-v1 \
   -Wno-missing-local-signatures \
   -Wno-missing-import-lists"
 
-
 STACK_GHCI_COMMAND="stack ghci $LIB_TARGET \
   --main-is $TEST_TARGET \
   --test \
@@ -153,16 +148,14 @@ STACK_GHCI_COMMAND="stack ghci $LIB_TARGET \
 
 stack exec -- ghcid --command "$STACK_GHCI_COMMAND" --test "main" --clear
 
-{-# START_FILE Setup.hs #-}
-import Distribution.Simple
-main = defaultMain
-
 {-# START_FILE test/Spec.hs #-}
+{-# HLINT ignore #-}
 {-# OPTIONS_GHC -F -pgmF hspec-discover #-}
 {-# OPTIONS_GHC -Wno-implicit-prelude #-}
 {-# OPTIONS_GHC -Wno-missing-export-lists #-}
 {-# OPTIONS_GHC -Wno-missing-import-lists #-}
 {-# OPTIONS_GHC -Wno-prepositive-qualified-module #-}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
 {-# START_FILE test/LibSpec.hs #-}
 module LibSpec (spec) where
