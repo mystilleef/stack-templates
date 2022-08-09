@@ -40,6 +40,7 @@ ghc-options:
   - -Wno-unsafe
   - -Wno-safe
   - -Wno-missing-safe-haskell-mode
+  - -Wno-missing-kind-signatures
   - -fwrite-ide-info -hiedir=.hie
 
 library:
@@ -127,28 +128,39 @@ function_next_line = true  # like -fn
 [*.py]
 indent_size = 4
 
-{-# START_FILE stackghcidtest.sh #-}
-#!/usr/bin/env bash
+{-# START_FILE Makefile #-}
+build: ## build the project
+	stack build --pedantic --fast --haddock-deps --verbosity warn
 
-PACKAGE="{{name}}"
+test: ## run the tests
+	stack test --pedantic --fast --verbosity warn
 
-LIB_TARGET="${PACKAGE}:lib"
+run: ## run the project
+	stack run --verbosity warn
 
-TEST_TARGET="${PACKAGE}:test:${PACKAGE}-test"
+clean: ## clean the project
+	stack clean --verbosity warn
 
-GHCI_OPTIONS="-v1 \
-  -fobject-code \
-  -Wno-missing-local-signatures \
-  -Wno-missing-import-lists"
+purge: ## purge the project
+	stack purge --verbosity warn
 
-STACK_GHCI_COMMAND="stack ghci $LIB_TARGET \
-  --main-is $TEST_TARGET \
-  --test \
-  --silent \
-  --pedantic \
-  --ghci-options '$GHCI_OPTIONS'"
+watch: ## error checking with ghcid
+	stack exec -- ghcid \
+		--command "stack ghci ${PACKAGE} --silent --pedantic --ghci-options='-v1 -fno-code -Wno-missing-local-signatures -Wno-missing-import-lists'" \
+		--reload=app --reload=src --reload=test \
+		--restart=stack.yaml --restart=package.yaml --restart=${PACKAGE}.cabal
 
-stack exec -- ghcid --command "$STACK_GHCI_COMMAND" --test "main" --clear
+ghcid: ## start ghcid
+	stack exec -- ghcid \
+		--command "stack ghci ${PACKAGE}:lib ${PACKAGE}:test:${PACKAGE}-test --silent --pedantic --ghci-options='-v1 -fobject-code -Wno-missing-local-signatures -Wno-missing-import-lists'" \
+		--reload=app --reload=src --reload=test \
+		--restart=stack.yaml --restart=package.yaml --restart=${PACKAGE}.cabal \
+		--test "main" --clear
+
+help: ## print documentation
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+.phony: build test run clean purge watch ghcid help
 
 {-# START_FILE test/Spec.hs #-}
 {-# HLINT ignore #-}
