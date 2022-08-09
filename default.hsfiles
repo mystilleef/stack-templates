@@ -20,7 +20,6 @@ extra-source-files:
 default-extensions:
   - DerivingStrategies
   - ImportQualifiedPost
-  - NoImplicitPrelude
   - OverloadedStrings
   - UnicodeSyntax
 
