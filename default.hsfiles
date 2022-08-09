@@ -130,22 +130,22 @@ indent_size = 4
 {-# START_FILE Makefile #-}
 project := {{name}}
 
-build: ## build the project
+build: ## build project
 	stack build --pedantic --fast --haddock-deps --verbosity warn
 
-test: ## run the tests
+test: ## run tests
 	stack test --pedantic --fast --verbosity warn
 
 repl: ## run ghci
 	stack ghci --pedantic --silent --ghci-options="-v0 -fobject-code -Wno-missing-import-lists -Wno-missing-local-signatures"
 
-run: ## run the project
+run: ## run executable
 	stack run --verbosity warn
 
-clean: ## clean the project
+clean: ## clean project
 	stack clean --verbosity warn
 
-purge: ## purge the project
+purge: ## purge project
 	stack purge --verbosity warn
 
 watch: ## error checking with ghcid
@@ -154,7 +154,7 @@ watch: ## error checking with ghcid
 		--reload=app --reload=src --reload=test \
 		--restart=stack.yaml --restart=package.yaml --restart=$(project).cabal
 
-ghcid: ## start ghcid
+ghcid: ## unit testing with ghcid
 	stack exec -- ghcid \
 		--command "stack ghci $(project):lib $(project):test:$(project)-test --silent --pedantic --ghci-options='-v1 -fobject-code -Wno-missing-local-signatures -Wno-missing-import-lists'" \
 		--reload=app --reload=src --reload=test \
