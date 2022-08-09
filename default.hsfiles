@@ -129,7 +129,7 @@ function_next_line = true  # like -fn
 indent_size = 4
 
 {-# START_FILE Makefile #-}
-project := ${PACKAGE}
+project := {{name}}
 
 build: ## build the project
 	stack build --pedantic --fast --haddock-deps --verbosity warn
