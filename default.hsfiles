@@ -129,6 +129,8 @@ function_next_line = true  # like -fn
 indent_size = 4
 
 {-# START_FILE Makefile #-}
+project := ${PACKAGE}
+
 build: ## build the project
 	stack build --pedantic --fast --haddock-deps --verbosity warn
 
@@ -146,15 +148,15 @@ purge: ## purge the project
 
 watch: ## error checking with ghcid
 	stack exec -- ghcid \
-		--command "stack ghci ${PACKAGE} --silent --pedantic --ghci-options='-v1 -fno-code -Wno-missing-local-signatures -Wno-missing-import-lists'" \
+		--command "stack ghci $(project) --silent --pedantic --ghci-options='-v1 -fno-code -Wno-missing-local-signatures -Wno-missing-import-lists'" \
 		--reload=app --reload=src --reload=test \
-		--restart=stack.yaml --restart=package.yaml --restart=${PACKAGE}.cabal
+		--restart=stack.yaml --restart=package.yaml --restart=$(project).cabal
 
 ghcid: ## start ghcid
 	stack exec -- ghcid \
-		--command "stack ghci ${PACKAGE}:lib ${PACKAGE}:test:${PACKAGE}-test --silent --pedantic --ghci-options='-v1 -fobject-code -Wno-missing-local-signatures -Wno-missing-import-lists'" \
+		--command "stack ghci $(project):lib $(project):test:$(project)-test --silent --pedantic --ghci-options='-v1 -fobject-code -Wno-missing-local-signatures -Wno-missing-import-lists'" \
 		--reload=app --reload=src --reload=test \
-		--restart=stack.yaml --restart=package.yaml --restart=${PACKAGE}.cabal \
+		--restart=stack.yaml --restart=package.yaml --restart=$(project).cabal \
 		--test "main" --clear
 
 help: ## print documentation
