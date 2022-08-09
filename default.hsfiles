@@ -40,8 +40,8 @@ ghc-options:
   - -Wno-unsafe
   - -Wno-safe
   - -Wno-missing-safe-haskell-mode
-  - -Wno-missing-kind-signatures
   - -fwrite-ide-info -hiedir=.hie
+# - -Wno-missing-kind-signatures
 
 library:
   source-dirs: src
