@@ -136,6 +136,9 @@ build: ## build the project
 test: ## run the tests
 	stack test --pedantic --fast --verbosity warn
 
+repl: ## run ghci
+	stack ghci --pedantic --silent --ghci-options="-v0 -fobject-code -Wno-missing-import-lists -Wno-missing-local-signatures"
+
 run: ## run the project
 	stack run --verbosity warn
 
