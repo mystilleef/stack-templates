@@ -148,6 +148,19 @@ clean: ## clean project
 purge: ## purge project
 	stack purge --verbosity warn
 
+update: ## update project
+	stack update --silent
+
+configlts: ## use stack lts resolver
+	stack config set resolver lts
+
+confignightly: ## use stack nightly resolver
+	stack config set resolver nightly
+
+lts: purge update configlts test ## use stack lts resolver
+
+nightly: purge update confignightly test ## use stack nightly resolver
+
 watch: ## error checking with ghcid
 	stack exec -- ghcid -q -S \
 		--command "stack ghci $(project) --silent --pedantic --ghci-options='-v1 -fno-code -Wno-missing-local-signatures -Wno-missing-import-lists'" \
@@ -164,7 +177,7 @@ ghcid: ## unit testing with ghcid
 help: ## print documentation
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: build test repl run clean purge watch ghcid help
+.PHONY: build test repl run clean purge update configlts confignightly lts nightly watch ghcid help
 
 {-# START_FILE test/Spec.hs #-}
 {-# HLINT ignore #-}
