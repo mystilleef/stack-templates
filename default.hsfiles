@@ -157,9 +157,9 @@ configlts: ## use stack lts resolver
 confignightly: ## use stack nightly resolver
 	stack config set resolver nightly
 
-lts: purge update configlts test ## use stack lts resolver
+lts: purge update configlts build test ## use stack lts resolver
 
-nightly: purge update confignightly test ## use stack nightly resolver
+nightly: purge update confignightly build test ## use stack nightly resolver
 
 watch: ## error checking with ghcid
 	stack exec -- ghcid -q -S \
