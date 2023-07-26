@@ -22,15 +22,17 @@ default-extensions:
   - ImportQualifiedPost
   - OverloadedStrings
   - UnicodeSyntax
+  - NoImplicitPrelude
 
 build-tools:
   - ghcid
   - hlint
-  - hoogle
+# - hoogle
   - pretty-simple
 
-dependencies:
-  - base
+language: GHC2021
+
+dependencies: base
 
 ghc-options:
   - -j
@@ -83,7 +85,7 @@ tests:
 
 {-# START_FILE .hlint.yaml #-}
 ---
-- arguments: [-j=4, -XHaskell2010]
+- arguments: [-j=3, -XGHC2021]
 - group: {name: default, enabled: true}
 - group: {name: dollar, enabled: true}
 - group: {name: generalise, enabled: true}
@@ -161,6 +163,8 @@ lts: purge update configlts build test ## use stack lts resolver
 
 nightly: purge update confignightly build test ## use stack nightly resolver
 
+all: nightly
+
 watch: ## error checking with ghcid
 	stack exec -- ghcid -q -S \
 		--command "stack ghci $(project) --silent --pedantic --ghci-options='-v1 -fno-code -Wno-missing-local-signatures -Wno-missing-import-lists'" \
@@ -177,7 +181,7 @@ ghcid: ## unit testing with ghcid
 help: ## print documentation
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: build test repl run clean purge update configlts confignightly lts nightly watch ghcid help
+.PHONY: build test repl run clean purge update configlts confignightly lts nightly all watch ghcid help
 
 {-# START_FILE test/Spec.hs #-}
 {-# HLINT ignore #-}
